@@ -7,23 +7,21 @@ export const useFavoriteStore = defineStore('favoriteStore', () => {
 
   // 任務8. 加入我的最愛
   const addFav = (target) => {
-    console.log(target);
+    const targetID = target && target.id? target.id : null
+    if (!targetID) return
+
+    const isExist = list.value.find(item => item.id === targetID)
+    if(isExist) return
+    list.value.push(target)
   }
 
   // 移除我的最愛
   const removeFav = (target) => {
     const targetID = target && target.id? target.id : null
     if (!targetID) return
-    
-    if (list.value.length === 0) return
 
-    const idx = list.value.findIndex(fav => fav.id == targetID)
-    if (idx < 0) return
-
-    const item = list.value[idx]
-    if (item.count > 1) {
-      item.count -= 1
-    }else{
+    const idx = list.value.findIndex(fav => fav.id == targetID)    
+    if (idx >= 0){
       list.value.splice(idx, 1)
     }
   }

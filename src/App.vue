@@ -4,8 +4,8 @@ import { ref, computed, onMounted } from 'vue'
 import FavList from '@/components/FavList.vue'
 
 // 如果使用pinia
-// import useFavoriteStore from '@/stores/favorites'
-// const favoriteStore = useFavoriteStore()
+import { useFavoriteStore } from '@/stores/favorites'
+const favoriteStore = useFavoriteStore()
 
 // 任務2. 顯示專輯資料
 // 目前畫面中僅呈現defaultData
@@ -46,17 +46,19 @@ const display = computed(()=>{
 // 任務5.加入我的收藏
 // 不限定方式，如果不知道怎麼使用pinia可以用其他方式
 const addFav = (item) => {
-  console.log(item);
+  favoriteStore.addFav(item)
 }
 
 </script>
 
 <template>
   <header>
-    <input type="search" v-model="search" />
-    <button @click="toggleAside">
-      <img src="~@/assets/heartRed.png" alt="收藏列表" />
-    </button>
+    <div>
+      <input type="search" v-model="search" />
+      <button @click="toggleAside">
+        <img src="~@/assets/heartRed.png" alt="收藏列表" />
+      </button>
+    </div>
   </header>
 
   <main>
@@ -79,26 +81,53 @@ const addFav = (item) => {
   </aside>
 </template>
 
-<style lang="scss" scoped>
-header ,main{
-  width: 100%;
-  display: inline-flex;
+<style lang="scss">
+button{
+  width: 2rem;
+  height: 2rem;
+  border-radius: 2rem;
+  padding: 0.2rem;
+  img{
+    width: 100%;
+  }
 }
+</style>
+<style lang="scss" scoped>
 header {
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  button{
-    z-index: 2;
+  position: fixed;
+  width: 100%;
+  z-index: 2;
+  background-color: #f9f9f9;
+  >div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 57rem;
+    margin: auto;
+    padding: 0.5rem;
+    box-sizing: border-box;
   }
 }
 main {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
+  justify-content: space-evenly;
   gap: 0.5rem;
+  max-width: 57rem;
+  margin: 3rem auto;
+  padding: 0.5rem;
+  box-sizing: border-box;
 }
 aside {
   width: 20rem;
   height: 100vh;
   position: fixed;
+  overflow: hidden;
+  overflow-y: scroll;
+
   z-index: 1;
   top: 0;
   right: -20rem;
@@ -112,13 +141,6 @@ aside {
   &.open {
     right: 0;
   }
-}
-
-button{
-  width: 2rem;
-  height: 2rem;
-  border-radius: 2rem;
-  padding: 0.2rem;
 }
 
 .card {
